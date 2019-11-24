@@ -1,4 +1,5 @@
 ﻿using Owin;
+using OwinDemo.Middleware;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,12 +12,7 @@ namespace OwinDemo
     {
         public static void Configuration(IAppBuilder app) {
 
-            app.Use(async (ctx, next) =>
-            {
-                Debug.WriteLine("Incoming Request: " + ctx.Request.Path);
-                await next();
-                Debug.WriteLine("Outgoing Request: " + ctx.Request.Path);
-            });
+            app.Use<DebugMiddleware>();
 
             app.Use(async (ctx, next) =>
             {
