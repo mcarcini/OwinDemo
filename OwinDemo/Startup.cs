@@ -12,7 +12,7 @@ namespace OwinDemo
     {
         public static void Configuration(IAppBuilder app) {
 
-            app.Use<DebugMiddleware>(new DebugMiddlewareOptions { 
+            app.UseDebugMiddleware(new DebugMiddlewareOptions { 
                 OnIncomingRequest = (ctx) =>
                 {
                     var watch = new Stopwatch();
