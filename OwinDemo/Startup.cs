@@ -1,4 +1,5 @@
-﻿using Owin;
+﻿using Nancy;
+using Owin;
 using OwinDemo.Middleware;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,9 @@ namespace OwinDemo
                 }
             });
 
-            app.UseNancy();
+            app.UseNancy(config => { 
+                config.PerformPassThrough = (context => context.Response.StatusCode == HttpStatusCode.NotFound);
+            });
 
             app.Use(async (ctx, next) =>
             {
