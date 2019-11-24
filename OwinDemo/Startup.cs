@@ -27,6 +27,8 @@ namespace OwinDemo
                 }
             });
 
+            app.UseNancy();
+
             app.Use(async (ctx, next) =>
             {
                 await ctx.Response.WriteAsync("Hello World");
