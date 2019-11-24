@@ -37,10 +37,12 @@ namespace OwinDemo
                 config.PerformPassThrough = (context => context.Response.StatusCode == HttpStatusCode.NotFound);
             });
 
+            /*
             app.Use(async (ctx, next) =>
             {
                 await ctx.Response.WriteAsync("Hello World");
             });            
+            */
         }
     }
 }
