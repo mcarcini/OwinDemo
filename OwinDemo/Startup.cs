@@ -14,7 +14,7 @@ namespace OwinDemo
     {
         public static void Configuration(IAppBuilder app) {
 
-            app.UseDebugMiddleware(new DebugMiddlewareOptions { 
+            app.UseDebugMiddleware(new DebugMiddlewareOptions {
                 OnIncomingRequest = (ctx) =>
                 {
                     var watch = new Stopwatch();
@@ -29,13 +29,33 @@ namespace OwinDemo
                 }
             });
 
+            app.UseCookieAuthentication(new Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions
+            {
+                AuthenticationType = "ApplicationCookie",
+                LoginPath = new Microsoft.Owin.PathString("/Auth/Login")
+            }); ;
+
+            app.Use(async (ctx, next) => {
+                if (ctx.Authentication.User.Identity.IsAuthenticated)
+                    Debug.WriteLine("User: " + ctx.Authentication.User.Identity.Name);
+                else
+                    Debug.WriteLine("User not Authenticated");
+                await next();
+            });
+
             var configApi = new HttpConfiguration();
             configApi.MapHttpAttributeRoutes();
             app.UseWebApi(configApi);
 
+
+            app.Map("/nancy", mappedBy => { mappedBy.UseNancy(); });
+
+            /*
             app.UseNancy(config => { 
                 config.PerformPassThrough = (context => context.Response.StatusCode == HttpStatusCode.NotFound);
             });
+            */
+            
 
             /*
             app.Use(async (ctx, next) =>
