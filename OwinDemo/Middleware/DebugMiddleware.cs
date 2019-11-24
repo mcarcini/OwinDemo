@@ -12,16 +12,24 @@ namespace OwinDemo.Middleware
     public class DebugMiddleware
     {
         AppFunc _next;
-        public DebugMiddleware(AppFunc next) {
+        DebugMiddlewareOptions options;
+        public DebugMiddleware(AppFunc next, DebugMiddlewareOptions options) {
             _next = next;
+            this.options = options;
+            if (options.OnIncomingRequest == null)
+                this.options.OnIncomingRequest = (ctx) => { Debug.WriteLine("Incoming Request: " + ctx.Request.Path); };
+            
+            if (options.OnOutgoingRequest == null)
+                this.options.OnOutgoingRequest = (ctx) => { Debug.WriteLine("Outgoing Request: " + ctx.Request.Path); };
+
         }
 
         public async Task Invoke(IDictionary<string, object> environment) {
             var ctx = new OwinContext(environment);
-
-            Debug.WriteLine("Incoming Request: " + ctx.Request.Path);
+            options.OnIncomingRequest(ctx);
             await _next(environment);
-            Debug.WriteLine("Outgoing Request: " + ctx.Request.Path);
+            options.OnOutgoingRequest(ctx);
+
         }
 
     }
