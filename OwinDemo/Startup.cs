@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 
 namespace OwinDemo
 {
@@ -27,6 +28,10 @@ namespace OwinDemo
                     Debug.WriteLine("Request took: " + watch.ElapsedMilliseconds + " ms");
                 }
             });
+
+            var configApi = new HttpConfiguration();
+            configApi.MapHttpAttributeRoutes();
+            app.UseWebApi(configApi);
 
             app.UseNancy(config => { 
                 config.PerformPassThrough = (context => context.Response.StatusCode == HttpStatusCode.NotFound);
